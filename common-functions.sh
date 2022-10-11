@@ -77,7 +77,7 @@ CheckSELinux() {
 	if [ "$STATUS" != 'disabled' ]; then 
 		error "SELINUX Enabled on the server, Hence cannot proceed. Please Disable it and run again.!!"
 		hint "Probably you can run the following script to disable SELINUX"
-		info "  curl -s https://raw.githubusercontent.com/indexit-devops/caput/master/vminit.sh | sudo bash"
+		info "  curl -s https://raw.githubusercontent.com/venkat09docs/linux-auto-scripts/main/vminit.sh | sudo bash"
 		exit 1
 	fi
 }
@@ -125,8 +125,8 @@ DownloadJava() {
 
 EnableEPEL() {
 	case $ELV in 
-		el7)
-			yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &>/dev/null
+		el8)
+			yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm &>/dev/null
 		;;
 		*)  error "OS Version not supported"
 			exit 1
@@ -186,8 +186,8 @@ Statt() {
 CheckOS() {
   OSVER=$(rpm -qi basesystem | grep ^Release | awk '{print $NF}' | awk -F . '{print $1}')
   case $1 in 
-     7) 
-     	if [ $OSVER -eq 7 ]; then 
+     8) 
+     	if [ $OSVER -eq 8 ]; then 
 		return 0
      	elif [ $OSVER -ne 7 ]; then 
 		error "Unsupported Opearating System... Expecting CentOS 7.x"
