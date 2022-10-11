@@ -109,7 +109,7 @@ service sshd restart
 
 Stat $? "Setup Password for Users"
 info "   Following are the Usernames and Passwords"
-Infot "centos / $CENTOS_PASS"
+Infot "devops / $DEVOPS_PASS"
 Infot "  root / $ROOT_PASS"
 echo
 
