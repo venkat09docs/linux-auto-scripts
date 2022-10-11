@@ -32,8 +32,9 @@ Stat 0 "Disabling Firewall"
 
 ## Updating System Updates
 #info "Updating System Updates"
+Stat 0 "Updating System"
 yum update -y &>/dev/null
-Stat $? "Updating System Updates"
+Stat $? "System Update is done Successfully"
 
 ## Install Base Packages
 
