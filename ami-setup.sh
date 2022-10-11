@@ -51,20 +51,27 @@ yum clean all &>/dev/null
 sed -i -e '/TCPKeepAlive/ c TCPKeepAlive yes' -e '/ClientAliveInterval/ c ClientAliveInterval 10' /etc/ssh/sshd_config
 Stat $? "Fixing SSH timeouts"
 
+# add the user devops
+useradd devops
+
 ## Enable color prompt
 curl -s https://raw.githubusercontent.com/venkat09docs/linux-auto-scripts/main/ps1.sh -o /etc/profile.d/ps1.sh
 chmod +x /etc/profile.d/ps1.sh
-Stat $? "Enable Color Prompt"
+Stat $? "Enable Color Prompt for Root User"
+
+echo "export PS1='[ \[\e[1;31m\]\u\[\e[m\]@\[\e[1;33m\]\h\[\e[m\] \[\e[1;36m\]\w\[\e[m\] ]\\$ '" >> /home/devops/.bashrc
+source /home/devops/.bashrc
+Stat $? "Enable Color Prompt for DevOps User"
 
 ## Enable idle shutdown
 curl -s https://raw.githubusercontent.com/venkat09docs/linux-auto-scripts/main/idle.sh -o /boot/idle.sh
 chmod +x /boot/idle.sh
 STAT1=$?
 
-useradd centos
+
 sed -i -e '/idle/ d' /var/spool/cron/root &>/dev/null
 echo "*/10 * * * * sh -x /boot/idle.sh &>/tmp/idle.out" >/var/spool/cron/root
-echo "@reboot passwd -u centos" >>/var/spool/cron/root
+echo "@reboot passwd -u devops" >>/var/spool/cron/root
 chmod 600 /var/spool/cron/root
 STAT2=$?
 if [ $STAT1 -eq 0 -a $STAT2 -eq 0 ]; then
@@ -88,8 +95,7 @@ DEVOPS_PASS="devops123"
 
 chattr -i /etc/ssh/sshd_config
 
-# add the user devops
-useradd devops
+
 # set password : the below command will avoid re entering the password
 echo $ROOT_PASS | passwd --stdin root
 echo $DEVOPS_PASS | passwd --stdin devops
