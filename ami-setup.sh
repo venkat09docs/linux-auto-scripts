@@ -84,20 +84,30 @@ Stat $? "Enable Password Login"
 
 ## Setup user passwords
 ROOT_PASS="devops123"
-CENTOS_PASS="devops123"
-#usermod -a -G google-sudoers centos &>/dev/null
-echo "echo $ROOT_PASS | passwd --stdin root"   >>/etc/rc.d/rc.local
-echo "echo $CENTOS_PASS | passwd --stdin centos"   >>/etc/rc.d/rc.local
-echo "sed -i -e 's/^centos:!!/centos:/' /etc/shadow" >>/etc/rc.d/rc.local
+DEVOPS_PASS="devops123"
+
+# add the user devops
+useradd devops
+# set password : the below command will avoid re entering the password
+echo $ROOT_PASS | passwd --stdin root
+echo $DEVOPS_PASS | passwd --stdin devops
+# modify the sudoers file at /etc/sudoers and add entry
+echo 'devops     ALL=(ALL)      NOPASSWD: ALL' | sudo tee -a /etc/sudoers
+echo 'ec2-user     ALL=(ALL)      NOPASSWD: ALL' | sudo tee -a /etc/sudoers
+# this command is to add an entry to file : echo 'PasswordAuthentication yes' | sudo tee -a /etc/ssh/sshd_config
+# the below sed command will find and replace words with spaces "PasswordAuthentication no" to "PasswordAuthentication yes"
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+service sshd restart
+
 Stat $? "Setup Password for Users"
 info "   Following are the Usernames and Passwords"
 Infot "centos / $CENTOS_PASS"
 Infot "  root / $ROOT_PASS"
 echo
+
+
 # echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIfSCB5MtXe54V3lWGBGSxMWPue5CjmSA4ky7E8GUoeZdXxI+df7msJL93PzmtwU3v+O+NLNJJRfmaGpEkgidVXoi6mnYUVCHb1y4zd6QIFEyglGDlvZ4svhHt7T15B13bJC3mTaR2A/xqlvE0/a4XKN1ATYyn6K6CTFJT8I4TIDQmO3PbcNsNFXoO1ef657aqNf0AXC1QWum3HulIt6iJ4s0pQI4hDTmR5EskJxr2K62F4JDOYmVu8bGhFT6ohYbXBCGQtmdp716RnF0Cp1htmxM001wvCSjWLPZuuBjtHXX+op+MJGr0aIqqxdVZ2gw0JeIDfVo7pkSIdTu+p2Yn devops' >/root/.ssh/authorized_keys
-sed -i -e 's/showfailed//' /etc/pam.d/postlogin
-chmod +x /etc/rc.d/rc.local
-systemctl enable rc-local
+
 
 ## Make local keys
 cat /dev/zero | ssh-keygen -q -N ""
