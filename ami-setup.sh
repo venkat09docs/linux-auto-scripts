@@ -86,6 +86,8 @@ Stat $? "Enable Password Login"
 ROOT_PASS="devops123"
 DEVOPS_PASS="devops123"
 
+chattr -i /etc/ssh/sshd_config
+
 # add the user devops
 useradd devops
 # set password : the below command will avoid re entering the password
