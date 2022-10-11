@@ -10,7 +10,7 @@ if [ $? -ne 0 ]; then
 fi
 ## Common Functions
 curl -s https://raw.githubusercontent.com/venkat09docs/linux-auto-scripts/main/common-functions.sh -o /tmp/common-functions.sh &>/dev/null
-source common-functions.sh
+source /tmp/common-functions.sh
 
 EPEL=https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
